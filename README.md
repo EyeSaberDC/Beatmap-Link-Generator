@@ -5,7 +5,7 @@ This project consists of a Python script that generates a list of download links
 ## Prerequisites
 
 - Python 3.7 or higher
-- `requests` library (install with `pip install requests`)
+- `requests` and `ossapi` library (install with `pip install requests ossapi`)
 
 ## Setup
 
