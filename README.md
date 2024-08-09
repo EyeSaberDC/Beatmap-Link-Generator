@@ -45,7 +45,7 @@ Feel free to fork this repository and submit pull requests with improvements or 
 
 ## Disclaimer
 
-This tool is not officially affiliated with osu!. Use it responsibly and at your own risk.
+This tool is not officially affiliated with osu! Use it responsibly and at your own risk.
 
 ## Legal Notice
 
