@@ -5,13 +5,11 @@ import requests
 from ossapi import Ossapi
 from ossapi.enums import BeatmapsetSearchCategory
 
-# Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Configuration
 CLIENT_ID = "your_client_id_here"
 CLIENT_SECRET = "your_client_secret_here"
-OUTPUT_FILE = "beatmap_links.txt"  # Replace with the path to your download folder
+OUTPUT_FILE = "beatmap_links.txt"
 NUMBER_OF_BEATMAPS = 50000
 
 def get_access_token():
@@ -41,7 +39,7 @@ def get_beatmap_links():
                 
                 url = "https://osu.ppy.sh/api/v2/beatmapsets/search"
                 params = {
-                    "m": "0",  # 0 is for osu! standard mode
+                    "m": "0",
                     "s": "ranked",
                     "sort": "ranked_desc",
                     "cursor_string": cursor_string
@@ -62,11 +60,10 @@ def get_beatmap_links():
                 for beatmap in beatmapsets:
                     if total_collected >= NUMBER_OF_BEATMAPS:
                         break
-                    # Check if the beatmapset contains an osu! standard difficulty
                     if any(bm['mode'] == 'osu' for bm in beatmap['beatmaps']):
                         download_url = f"https://osu.ppy.sh/beatmapsets/{beatmap['id']}/download"
                         f.write(f"{download_url}\n")
-                        f.flush()  # Ensure the line is written immediately
+                        f.flush()
                         total_collected += 1
                         logging.info(f"Added link for beatmap {beatmap['id']}. Progress: {total_collected}/{NUMBER_OF_BEATMAPS}")
                 
@@ -75,11 +72,10 @@ def get_beatmap_links():
                     logging.info("No more pages available.")
                     break
                 
-                time.sleep(1)  # Add a small delay between API requests
+                time.sleep(1)
 
         logging.info(f"Finished collecting {total_collected} beatmap links. Saved to {OUTPUT_FILE}")
         
-        # Verify file contents
         with open(OUTPUT_FILE, 'r', encoding='utf-8') as f:
             line_count = sum(1 for line in f)
         logging.info(f"Verification: {line_count} lines written to {OUTPUT_FILE}")
