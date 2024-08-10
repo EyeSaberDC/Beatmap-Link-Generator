@@ -1,6 +1,6 @@
 # osu! Beatmap Link Generator
 
-This project consists of a Python script that generates a list of download links for ranked osu! standard beatmaps, with the ability to filter by star rating.
+This project consists of a Python script that generates a list of download links for ranked osu! standard beatmaps, with the ability to filter by star rating range.
 
 ## Prerequisites
 
@@ -26,15 +26,16 @@ This project consists of a Python script that generates a list of download links
    - `MIN_STARS`: The minimum star rating of beatmaps to include (e.g., 4.0).
    - `MAX_STARS`: The maximum star rating of beatmaps to include (e.g., 5.5).
 
-2. Run the script with `python generate_links.py`
-3. This will create a file named `beatmap_links.txt` containing the download links for ranked osu! standard beatmaps within the specified star range.
+2. Run the script.
+3. This will create a file named `beatmap_links.txt` containing the download links for ranked osu! standard beatmaps that have at least one difficulty within the specified star range.
 
 ## Notes
 
 - The script uses the osu! API v2, which has rate limits. If you encounter errors, try adding delays between requests.
 - This script is for personal use only. Please respect osu!'s terms of service.
 - The generated links are direct download links for the beatmaps. You'll need to be logged into your osu! account to use these links.
-- The star rating filter applies to the highest difficulty in each beatmap set. Sets with at least one difficulty within the specified range will be included.
+- The star rating filter includes beatmaps that have at least one difficulty within the specified range. A beatmap set may contain difficulties outside this range as well.
+- The script logs all star ratings within the specified range for each added beatmap.
 
 ## Troubleshooting
 
