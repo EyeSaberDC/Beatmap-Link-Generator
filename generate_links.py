@@ -10,7 +10,7 @@ CLIENT_SECRET = "your_client_secret_here"
 OUTPUT_FILE = "beatmap_links.txt"
 NUMBER_OF_BEATMAPS = 50
 MIN_STARS = 4.0
-MAX_STARS = 4.5
+MAX_STARS = 5.5
 
 def get_access_token():
     token_url = "https://osu.ppy.sh/oauth/token"
