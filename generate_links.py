@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 CLIENT_ID = "your_client_id_here"
 CLIENT_SECRET = "your_client_secret_here"
 OUTPUT_FILE = "beatmap_links.txt"
-NUMBER_OF_BEATMAPS = 50
+NUMBER_OF_BEATMAPS = 500
 MIN_STARS = 4.0
 MAX_STARS = 5.5
 
@@ -39,7 +39,7 @@ def get_beatmap_links():
                 
                 url = "https://osu.ppy.sh/api/v2/beatmapsets/search"
                 params = {
-                    "m": "0",
+                    "m": "0",  # 0 is for osu! standard mode
                     "s": "ranked",
                     "sort": "ranked_desc",
                     "cursor_string": cursor_string
@@ -61,13 +61,15 @@ def get_beatmap_links():
                     if total_collected >= NUMBER_OF_BEATMAPS:
                         break
                     osu_difficulties = [bm for bm in beatmap['beatmaps'] if bm['mode'] == 'osu']
-                    max_stars = max(bm['difficulty_rating'] for bm in osu_difficulties) if osu_difficulties else 0
-                    if MIN_STARS <= max_stars <= MAX_STARS:
+                    difficulties_in_range = [bm for bm in osu_difficulties if MIN_STARS <= bm['difficulty_rating'] <= MAX_STARS]
+                    
+                    if difficulties_in_range:
                         download_url = f"https://osu.ppy.sh/beatmapsets/{beatmap['id']}/download"
                         f.write(f"{download_url}\n")
                         f.flush()
                         total_collected += 1
-                        logging.info(f"Added link for beatmap {beatmap['id']} (Stars: {max_stars:.2f}). Progress: {total_collected}/{NUMBER_OF_BEATMAPS}")
+                        star_ratings = [f"{bm['difficulty_rating']:.2f}" for bm in difficulties_in_range]
+                        logging.info(f"Added link for beatmap {beatmap['id']} (Stars: {', '.join(star_ratings)}). Progress: {total_collected}/{NUMBER_OF_BEATMAPS}")
                 
                 cursor_string = data.get('cursor_string')
                 if not cursor_string:
@@ -77,7 +79,7 @@ def get_beatmap_links():
                 time.sleep(1)
 
         logging.info(f"Finished collecting {total_collected} beatmap links. Saved to {OUTPUT_FILE}")
-        
+
         with open(OUTPUT_FILE, 'r', encoding='utf-8') as f:
             line_count = sum(1 for line in f)
         logging.info(f"Verification: {line_count} lines written to {OUTPUT_FILE}")
