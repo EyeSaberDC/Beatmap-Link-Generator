@@ -2,15 +2,15 @@ import os
 import time
 import logging
 import requests
-from ossapi import Ossapi
-from ossapi.enums import BeatmapsetSearchCategory
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 CLIENT_ID = "your_client_id_here"
 CLIENT_SECRET = "your_client_secret_here"
 OUTPUT_FILE = "beatmap_links.txt"
-NUMBER_OF_BEATMAPS = 50000
+NUMBER_OF_BEATMAPS = 50
+MIN_STARS = 4.0
+MAX_STARS = 4.5
 
 def get_access_token():
     token_url = "https://osu.ppy.sh/oauth/token"
@@ -60,12 +60,14 @@ def get_beatmap_links():
                 for beatmap in beatmapsets:
                     if total_collected >= NUMBER_OF_BEATMAPS:
                         break
-                    if any(bm['mode'] == 'osu' for bm in beatmap['beatmaps']):
+                    osu_difficulties = [bm for bm in beatmap['beatmaps'] if bm['mode'] == 'osu']
+                    max_stars = max(bm['difficulty_rating'] for bm in osu_difficulties) if osu_difficulties else 0
+                    if MIN_STARS <= max_stars <= MAX_STARS:
                         download_url = f"https://osu.ppy.sh/beatmapsets/{beatmap['id']}/download"
                         f.write(f"{download_url}\n")
                         f.flush()
                         total_collected += 1
-                        logging.info(f"Added link for beatmap {beatmap['id']}. Progress: {total_collected}/{NUMBER_OF_BEATMAPS}")
+                        logging.info(f"Added link for beatmap {beatmap['id']} (Stars: {max_stars:.2f}). Progress: {total_collected}/{NUMBER_OF_BEATMAPS}")
                 
                 cursor_string = data.get('cursor_string')
                 if not cursor_string:
